@@ -361,3 +361,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/DotNet4Java/ConsoleTest/obj/project.nuget.cache
+/DotNet4Java/ConsoleTest/obj/ConsoleTest.csproj.nuget.dgspec.json
+/DotNet4Java/ConsoleTest/obj/Debug/net7.0/ConsoleTest.assets.cache
+/DotNet4Java/ConsoleTest/obj/Debug/net7.0/ConsoleTest.GeneratedMSBuildEditorConfig.editorconfig
+/.vs/dotnet4java1/v17/.wsuo
