@@ -6,7 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
 
-            Console.WriteLine("New branch test");
+            Console.WriteLine("New branch test 3");
 
             Console.ReadLine();
         }
