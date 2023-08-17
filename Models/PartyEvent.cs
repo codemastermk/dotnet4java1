@@ -11,6 +11,6 @@ namespace night_life_sk.Models
         public double? Price { get; set; }
         public string? ImageUrl { get; set; }
         public DateTime? EventTime { get; set; }
-        public PartyPlace? PartyPlace { get; set; }
+        public virtual PartyPlace? PartyPlace { get; set; }
     }
 }

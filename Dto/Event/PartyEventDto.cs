@@ -1,6 +1,6 @@
 ﻿namespace night_life_sk.Dto.Event
 {
-    public record EventDto
+    public record PartyEventDto
     {
         public string? Name { get; init; }
         public string? Description { get; init; }

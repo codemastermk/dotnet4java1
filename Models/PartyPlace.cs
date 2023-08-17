@@ -9,7 +9,7 @@ namespace night_life_sk.Models
         public string? Address { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set;}
-        public AppUser? AppUser { get; set; }
-        public HashSet<PartyEvent>? Events { get; set; }
+        public virtual AppUser? AppUser { get; set; }
+        public virtual HashSet<PartyEvent>? Events { get; set; }
     }
 }

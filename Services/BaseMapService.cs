@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using night_life_sk.Dto.Place;
 using night_life_sk.Mappers;
+using night_life_sk.Models;
 using night_life_sk.Repositories.place;
 
 namespace night_life_sk.Services
@@ -20,10 +21,7 @@ namespace night_life_sk.Services
         internal HashSet<PlaceCoordinates> GetAllPartyPlaces() => 
             partyPlaceMapper.ConvertAllToCoordinates(partyPlaceRepository.FindAll());
 
-        internal IActionResult GetPlaceAndEventOnClick(double longitude, double latitude, DateTime date)
-        {
-
-            throw new NotImplementedException();
-        }
+        internal PlaceAndEventDto GetPlaceAndEventOnClick(double longitude, double latitude, DateTime date) => 
+            partyPlaceMapper.ConvertToOnClickClub(partyPlaceRepository.FindByXYTime(longitude, latitude, date));
     }
 }

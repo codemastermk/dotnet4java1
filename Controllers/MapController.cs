@@ -14,17 +14,17 @@ namespace night_life_sk.Controllers
             this.mapService = mapService;
         }
         [HttpGet("coordinates")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<PlaceCoordinates>))]
+        [ProducesResponseType(200, Type = typeof(HashSet<PlaceCoordinates>))]
         public IActionResult GetAllPlaces() => Ok(mapService.GetAllPartyPlaces());
 
         [HttpGet("place-on-click")]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<PlaceCoordinates>))]
+        [ProducesResponseType(200, Type = typeof(PlaceAndEventDto))]
         public IActionResult GetPlaceAndEventOnClick (
             [FromQuery] double longitude,
             [FromQuery] double latitude,
             [FromQuery] DateTime date)
         {
-            return mapService.GetPlaceAndEventOnClick(longitude, latitude, date);
+            return Ok(mapService.GetPlaceAndEventOnClick(longitude, latitude, date));
         }
             
     }

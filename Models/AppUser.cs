@@ -8,6 +8,6 @@ namespace night_life_sk.Models
         public string? Username { get; set; }
         public string? Password { get; set; }
         public string? Email { get; set; }
-        public HashSet<PartyPlace>? PartyPlaces { get; set;}
+        public virtual HashSet<PartyPlace>? PartyPlaces { get; set;}
     }
 }

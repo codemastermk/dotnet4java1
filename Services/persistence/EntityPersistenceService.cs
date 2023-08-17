@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using night_life_sk.Data;
 using night_life_sk.Exceptions;
 using night_life_sk.Models;
+using System;
 
 namespace night_life_sk.Services.persistence
 {
@@ -58,5 +60,32 @@ namespace night_life_sk.Services.persistence
             dataContext.Set<T>().Remove(entity);
             dataContext.SaveChanges();
         }
+
+        internal PartyPlace FindByXYTime(double latitude, double longitude, DateTime dateTime)
+        {
+            PartyPlace GetPartyPlaceByXYTime(DataContext dataContext)
+            {
+                var place = dataContext.PartyPlaces
+                    .FirstOrDefault(p => p.Latitude == latitude && p.Longitude == longitude);
+
+                if (place != null)
+                {
+                    if (place.Events != null)
+                    {
+                        place.Events = place.Events
+                        .Where(e => e.EventTime.HasValue && e.EventTime.Value.Date == dateTime.Date)
+                        .ToHashSet();
+                    }
+                    return place;
+                }
+
+                throw new NightLifeException("Place not found");
+            }
+
+            return scopedServiceProvider.ExecuteFuncInScope(dataContext => GetPartyPlaceByXYTime(dataContext));
+        }
+
+
     }
 }
+
