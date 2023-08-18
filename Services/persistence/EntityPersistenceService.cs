@@ -61,7 +61,7 @@ namespace night_life_sk.Services.persistence
             dataContext.SaveChanges();
         }
 
-        internal PartyPlace FindByXYTime(double latitude, double longitude, DateTime dateTime)
+        public PartyPlace FindByXYTime(double latitude, double longitude, DateTime dateTime)
         {
             PartyPlace GetPartyPlaceByXYTime(DataContext dataContext)
             {
@@ -85,7 +85,11 @@ namespace night_life_sk.Services.persistence
             return scopedServiceProvider.ExecuteFuncInScope(dataContext => GetPartyPlaceByXYTime(dataContext));
         }
 
-
+        internal HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
+            scopedServiceProvider.ExecuteFuncInScope(
+                dataContext => dataContext.PartyEvents
+                .Where(e => e.EventTime.HasValue && e.EventTime.Value.Date == date)
+                .ToHashSet());
     }
 }
 

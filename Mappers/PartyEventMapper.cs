@@ -17,5 +17,8 @@ namespace night_life_sk.Mappers
                 Price = partyEvent.Price,
             };
         }
+
+        internal HashSet<PartyEventDto> ConvertAllToDTO(HashSet<PartyEvent> partyEvents) => 
+            partyEvents.Select(e => ConvertToDTO(e)).ToHashSet();
     }
 }

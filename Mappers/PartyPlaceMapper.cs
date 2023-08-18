@@ -42,31 +42,19 @@ namespace night_life_sk.Mappers
             return partyPlaces.Select(place => ConvertToDTO(place)).ToHashSet();
         }
 
-        internal PlaceAndEventDto ConvertToOnClickClub(PartyPlace partyPlace)
+        public PlaceAndEventDto ConvertToOnClickClub(PartyPlace partyPlace)
         {
             PartyEvent? partyEvent = null;
             if (partyPlace.Events != null)
             {
                 partyEvent = partyPlace.Events.FirstOrDefault();
             }
-            if (partyEvent != null)
+            return new PlaceAndEventDto
             {
-                return new PlaceAndEventDto
-                {
-                    Address = partyPlace.Address,
-                    Name = partyPlace.Name,
-                    EventDto = eventMapper.ConvertToDTO(partyEvent),
-                };
-            }
-            else
-            {
-                return new PlaceAndEventDto
-                {
-                    Address = partyPlace.Address,
-                    Name = partyPlace.Name,
-                };
-            }
-
+                Address = partyPlace.Address,
+                Name = partyPlace.Name,
+                EventDto = partyEvent != null ? eventMapper.ConvertToDTO(partyEvent) : null
+            };
         }
     }
 }
