@@ -25,12 +25,6 @@ builder.Services.AddSingleton<PartyPlaceMapper>();
 builder.Services.AddSingleton<PartyEventMapper>();
 builder.Services.AddSingleton<AppUserMapper>();
 
-var myConnectionString = Environment.GetEnvironmentVariable("MyDatabaseConnectionString");
-if (!string.IsNullOrEmpty(myConnectionString))
-{
-    builder.Configuration.GetSection("ConnectionStrings")["DefaultConnection"] = myConnectionString;
-}
-
 builder.Services.AddDbContext<DataContext>(options => options
 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 .UseLazyLoadingProxies());
