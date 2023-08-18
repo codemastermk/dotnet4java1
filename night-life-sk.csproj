@@ -25,7 +25,7 @@
     <Folder Include="Configuration\Security\" />
     <Folder Include="Dto\User\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Scheduled\" />
+    <Folder Include="Repositories\Scheduled\" />
   </ItemGroup>
 
 </Project>

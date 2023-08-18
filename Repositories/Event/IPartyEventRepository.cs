@@ -13,5 +13,9 @@ namespace night_life_sk.Repositories.Event
         public void Update(PartyEvent partyEvent);
 
         public void Delete(int id);
+
+        HashSet<PartyEvent> FindAllEventsByDate(DateTime date);
+        
+        HashSet<PartyEvent> FindAllFilteredEvents(int price, string genre, DateTime date);
     }
 }

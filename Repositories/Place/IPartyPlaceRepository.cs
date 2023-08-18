@@ -15,6 +15,5 @@ namespace night_life_sk.Repositories.place
 
         public void Delete(int id);
         PartyPlace FindByXYTime(double longitude, double latitude, DateTime date);
-        HashSet<PartyEvent> FindAllEventsByDate(DateTime date);
     }
 }

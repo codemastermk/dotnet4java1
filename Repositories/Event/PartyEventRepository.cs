@@ -24,6 +24,12 @@ namespace night_life_sk.Repositories.Event
 
         public void Delete(int id) => entityPersistenceService.Delete<PartyEvent>(id);
 
-        public void Update(PartyEvent partyEvent) => entityPersistenceService.Update<PartyEvent>(partyEvent); 
+        public void Update(PartyEvent partyEvent) => entityPersistenceService.Update<PartyEvent>(partyEvent);
+        
+        public HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
+            entityPersistenceService.FindAllEventsByDate(date);
+
+        HashSet<PartyEvent> IPartyEventRepository.FindAllFilteredEvents(int price, string genre, DateTime date) =>
+            entityPersistenceService.FindAllFilteredEvents(price, genre, date);
     }
 }

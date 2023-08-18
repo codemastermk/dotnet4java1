@@ -88,8 +88,14 @@ namespace night_life_sk.Services.persistence
         internal HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
             scopedServiceProvider.ExecuteFuncInScope(
                 dataContext => dataContext.PartyEvents
-                .Where(e => e.EventTime.HasValue && e.EventTime.Value.Date == date)
-                .ToHashSet());
+                    .Where(e => e.EventTime.HasValue && e.EventTime.Value.Date == date)
+                    .ToHashSet());
+
+        internal HashSet<PartyEvent> FindAllFilteredEvents(int price, string genre, DateTime date) =>
+            scopedServiceProvider.ExecuteFuncInScope(
+                dataContext => dataContext.PartyEvents
+                    .Where(e => e.Price == price && e.Genre == genre && e.EventTime == date)
+                    .ToHashSet());
     }
 }
 

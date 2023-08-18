@@ -18,8 +18,6 @@ namespace night_life_sk.Repositories.place
 
         public HashSet<PartyPlace> FindAll() => entityPersistenceService.FindAll<PartyPlace>();
 
-        public HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
-            entityPersistenceService.FindAllEventsByDate(date);
         public PartyPlace FindById(int id) => entityPersistenceService.FindById<PartyPlace>(id);
 
         public void Update(PartyPlace partyPlace) => entityPersistenceService.Update(partyPlace);
