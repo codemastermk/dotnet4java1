@@ -105,102 +105,48 @@ namespace night_life_sk.Services.persistence
                 throw new NightLifeException("Date is missing");
             }
 
-            var places = new HashSet<PartyPlace>();
-
-            if (
-                filteredPlaces.Distance != null &&
-                filteredPlaces.Latitude != null &&
-                filteredPlaces.Longitude != null)
-            {
-                FilterNearbyPlaces(
-                    filteredPlaces.Latitude,
-                    filteredPlaces.Longitude,
-                    filteredPlaces.Distance,
-                    ref places);
-            }
-
-            if (places.Count > 0)
-            {
-                Func<DataContext, PartyPlace, HashSet<PartyEvent>> filteredEvents = FilterEventsByGenrePriceDate(filteredPlaces);
-                HashSet<PartyEvent> events = new();
-                foreach (var place in places)
-                {
-                    events.UnionWith(filteredEvents(dataContext, place));
-                }
-            }
-
-            return new HashSet<PartyEvent>();
+            Func<DataContext, HashSet<PartyEvent>> filteredEvents = FilterEventsByGenrePriceDate(filteredPlaces);
+            return filteredEvents(dataContext);
         }
 
-        private static Func<DataContext, PartyPlace, HashSet<PartyEvent>> FilterEventsByGenrePriceDate(FilteredPlacesDto filteredPlaces)
+        private static Func<DataContext, HashSet<PartyEvent>> FilterEventsByGenrePriceDate(FilteredPlacesDto filteredPlaces)
         {
 
             if (filteredPlaces.Genre != null && filteredPlaces.Price != null)
             {
-                return (data, partyPlace) => data.PartyEvents
+                return (data) => data.PartyEvents
                 .Where(
-                    e => e.PartyPlace != null &&
+                    e =>
                     e.EventTime == filteredPlaces.Date &&
-                    e.PartyPlace.Equals(partyPlace) &&
                     e.Genre == filteredPlaces.Genre &&
                     e.Price == filteredPlaces.Price)
                 .ToHashSet();
             }
             else if (filteredPlaces.Genre == null && filteredPlaces.Price != null)
             {
-                return (data, partyPlace) => data.PartyEvents
+                return (data) => data.PartyEvents
                 .Where(
-                    e => e.PartyPlace != null &&
+                    e =>
                     e.EventTime == filteredPlaces.Date &&
-                    e.PartyPlace.Equals(partyPlace) &&
                     e.Price == filteredPlaces.Price)
                 .ToHashSet();
             }
             else if (filteredPlaces.Genre != null)
             {
-                return (data, partyPlace) => data.PartyEvents
+                return (data) => data.PartyEvents
                 .Where(
-                    e => e.PartyPlace != null &&
+                    e =>
                     e.EventTime == filteredPlaces.Date &&
-                    e.PartyPlace.Equals(partyPlace) &&
                     e.Genre == filteredPlaces.Genre)
                 .ToHashSet();
-            } 
+            }
             else
             {
-                return (data, partyPlace) => data.PartyEvents
+                return (data) => data.PartyEvents
                 .Where(
-                    e => e.PartyPlace != null &&
-                    e.EventTime == filteredPlaces.Date)
+                    e => e.EventTime == filteredPlaces.Date)
                 .ToHashSet();
             }
-        }
-
-        private static void FilterNearbyPlaces(
-            double? latitude,
-            double? longitude,
-            double? distance,
-            ref HashSet<PartyPlace> places)
-        {
-            // Use Haversine formula in SQL query
-            string query = @"
-            SELECT PlaceID, Name, Latitude, Longitude 
-            FROM Places 
-            WHERE (6371 * acos(
-            cos(radians(@lat)) 
-            * cos(radians(Latitude)) 
-            * cos(radians(Longitude) - radians(@lng)) 
-            + sin(radians(@lat)) 
-            * sin(radians(Latitude))
-        )) <= @distance";
-
-            using SqlConnection connection = new(
-                "Data Source = pc676; Initial Catalog = night_life; Integrated Security = True;" +
-                " Connect Timeout = 30; Encrypt = False; " +
-                "Trust Server Certificate = False; Application Intent = ReadWrite; Multi Subnet Failover = False");
-                places = new HashSet<PartyPlace>(
-                    connection.Query<PartyPlace>(
-                        query, new { lat = latitude, lng = longitude, distance }));    
         }
     }
 }
