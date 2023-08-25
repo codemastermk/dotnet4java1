@@ -20,34 +20,33 @@ namespace ConsoleTest.service.impl
 
         public Book GetBook(string title)
         {
-            return BookStore.Books.Find(book => book.Title == title);
+            return BookStore.Books.Where(book => book.Title == title).FirstOrDefault();
         }
 
         
 
-        public List<string> GetTitles()
+        public IEnumerable<string> GetTitles()
         {
             return BookStore.Books.Select(book => book.Title).ToList();
         }
 
-        public Book SellBook(string title)
+        public void SellBook(string title)
         {
             Console.WriteLine($"Selling book {title}.");
-            Book book = BookStore.Books.Find(x => x.Title == title);
+            Book book = BookStore.Books.Where(book => book.Title == title).FirstOrDefault();
             if (book == null)
             {
-                throw new Exception("Book not found");
+                Console.WriteLine("Book not found");
             }
             else
             {
                 BookStore.Books.Remove(book);
-                return book;
             }
         }
 
         public void PrintBooks()
         {
-            BookStore.Books.ForEach(book => { Console.WriteLine($"{book} "); });
+            BookStore.Books.ToList().ForEach(book => { Console.WriteLine($"{book} "); });
         }
     }
 }

@@ -17,7 +17,7 @@ namespace ConsoleTest
             };
             IBookStoreService BookStoreService = InitBookStore();
 
-            Console.WriteLine("Welcome to the CodeMaster BookStore!");
+            Console.WriteLine("Welcome to the BookStore!");
             while (true)
             {
                 DisplayMenu();

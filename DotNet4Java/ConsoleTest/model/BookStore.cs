@@ -11,7 +11,7 @@ namespace ConsoleTest.model
         public BookStore() {
             this.books = new List<Book>();
         }
-        private List<Book> books;
-        public List<Book> Books { get { return books; } }
+        private ICollection<Book> books;
+        public ICollection<Book> Books { get { return books; } }
     }
 }

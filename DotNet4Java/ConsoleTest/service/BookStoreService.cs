@@ -9,10 +9,10 @@ namespace ConsoleTest.service
 {
     internal interface IBookStoreService
     {
-        Book SellBook(string title);
+        void SellBook(string title);
         void PrintBooks();
 
-        List<String> GetTitles();
+        IEnumerable<String> GetTitles();
         Book GetBook(String title);
     }
 }
