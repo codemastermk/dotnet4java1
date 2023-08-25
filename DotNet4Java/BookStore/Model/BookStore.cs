@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleTest.Model
 {
+
     internal record BookStore(string Name)
     {
         public HashSet<Book> Books { get; private set; } = new HashSet<Book>();
