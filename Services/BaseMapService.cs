@@ -33,8 +33,8 @@ namespace night_life_sk.Services
         internal HashSet<PartyEventDto> GetEventsByDate(DateTime date) =>
             partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllEventsByDate(date));
 
-        internal HashSet<PartyEventDto> GetFilteredEvents(int price, string genre, DateTime date) =>
-            partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllFilteredEvents(price, genre, date));
+        internal HashSet<PartyEventDto> GetFilteredEvents(FilteredPlacesDto filteredPlaces) =>
+            partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllFilteredEvents(filteredPlaces));
 
         internal PlaceAndEventDto GetPlaceAndEventOnClick(double longitude, double latitude, DateTime date) => 
             partyPlaceMapper.ConvertToOnClickClub(partyPlaceRepository.FindByXYTime(longitude, latitude, date));

@@ -37,12 +37,9 @@ namespace night_life_sk.Controllers
 
         [HttpGet("/events/filtered")]
         [ProducesResponseType(200, Type = typeof(HashSet<PartyEventDto>))]
-        public ActionResult<HashSet<PartyEventDto>> GetFilteredEvents(
-            [FromQuery] int price,
-            [FromQuery] string genre,
-            [FromQuery] DateTime date)
+        public ActionResult<HashSet<PartyEventDto>> GetFilteredEvents([FromQuery] FilteredPlacesDto filteredParam)
         {
-            return Ok(mapService.GetFilteredEvents(price, genre, date));
+            return Ok(mapService.GetFilteredEvents(filteredParam));
         }
     }
 }

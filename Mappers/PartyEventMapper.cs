@@ -6,7 +6,7 @@ namespace night_life_sk.Mappers
     public class PartyEventMapper
     {
         public PartyEventDto ConvertToDTO(PartyEvent partyEvent) 
-        { 
+        {
             return new PartyEventDto
             {
                 Description = partyEvent.Description,
@@ -15,6 +15,8 @@ namespace night_life_sk.Mappers
                 ImageUrl = partyEvent.ImageUrl,
                 Name = partyEvent.Name,
                 Price = partyEvent.Price,
+                Latitude = partyEvent.PartyPlace != null ? partyEvent.PartyPlace.Latitude : null,
+                Longitude = partyEvent.PartyPlace != null ? partyEvent.PartyPlace.Longitude : null
             };
         }
 

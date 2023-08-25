@@ -8,5 +8,7 @@
         public int? Price { get; init; }
         public string? ImageUrl { get; init; }
         public DateTime? EventTime { get; init; }
+        public double? Latitude { get; init; }
+        public double? Longitude { get; init; }
     }
 }

@@ -4,6 +4,7 @@ using night_life_sk.Models;
 using night_life_sk.Services;
 using night_life_sk.Exceptions;
 using night_life_sk.Services.persistence;
+using night_life_sk.Dto.Place;
 
 namespace night_life_sk.Repositories.Event
 {
@@ -29,7 +30,7 @@ namespace night_life_sk.Repositories.Event
         public HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
             entityPersistenceService.FindAllEventsByDate(date);
 
-        HashSet<PartyEvent> IPartyEventRepository.FindAllFilteredEvents(int price, string genre, DateTime date) =>
-            entityPersistenceService.FindAllFilteredEvents(price, genre, date);
+        HashSet<PartyEvent> IPartyEventRepository.FindAllFilteredEvents(FilteredPlacesDto filteredPlaces) =>
+            entityPersistenceService.FindAllFilteredEvents(filteredPlaces);
     }
 }
