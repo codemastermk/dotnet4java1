@@ -28,5 +28,5 @@ namespace ConsoleTest.Model
     }
 
     internal record BookEdition(HashSet<Author> authors, string Title, long ISBN) {}
-    internal record Book(BookEdition Edition, int Price, BookStore BookStore) { }
+    internal record Book(BookEdition Edition, int Price, BookStore BookStore) {}
 }
