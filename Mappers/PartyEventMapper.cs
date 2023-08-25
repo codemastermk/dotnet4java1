@@ -7,17 +7,15 @@ namespace night_life_sk.Mappers
     {
         public PartyEventDto ConvertToDTO(PartyEvent partyEvent) 
         {
-            return new PartyEventDto
-            {
-                Description = partyEvent.Description,
-                EventTime = partyEvent.EventTime,
-                Genre = partyEvent.Genre,
-                ImageUrl = partyEvent.ImageUrl,
-                Name = partyEvent.Name,
-                Price = partyEvent.Price,
-                Latitude = partyEvent.PartyPlace != null ? partyEvent.PartyPlace.Latitude : null,
-                Longitude = partyEvent.PartyPlace != null ? partyEvent.PartyPlace.Longitude : null
-            };
+            return new PartyEventDto(
+                partyEvent.Name,
+                partyEvent.Description,
+                partyEvent.Genre,
+                partyEvent.Price,
+                partyEvent.ImageUrl,
+                partyEvent.EventTime,
+                partyEvent.PartyPlace?.Latitude,
+                partyEvent.PartyPlace?.Longitude);
         }
 
         internal HashSet<PartyEventDto> ConvertAllToDTO(HashSet<PartyEvent> partyEvents) => 

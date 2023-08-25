@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Configuration\Security\" />
-    <Folder Include="Dto\User\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

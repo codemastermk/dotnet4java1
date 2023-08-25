@@ -13,23 +13,19 @@ namespace night_life_sk.Mappers
 
         private static PartyPlaceDto ConvertToDTO(PartyPlace partyPlace)
         {
-            return new PartyPlaceDto
-            {
-                Name = partyPlace.Name,
-                Address = partyPlace.Address,
-                Latitude = partyPlace.Latitude,
-                Longitude = partyPlace.Longitude,
-            };
+            return new PartyPlaceDto(
+                partyPlace.Name, 
+                partyPlace.Address,
+                partyPlace.Latitude, 
+                partyPlace.Longitude);
         }
 
         private static PlaceCoordinates ConvertToCoordinates(PartyPlace partyPlace)
         {
-            return new PlaceCoordinates
-            {
-                PlaceName = partyPlace.Name,
-                Latitude = partyPlace.Latitude,
-                Longitude = partyPlace.Longitude
-            };
+            return new PlaceCoordinates(
+                partyPlace.Name,
+                partyPlace.Latitude,
+                partyPlace.Longitude);
         }
 
         public HashSet<PlaceCoordinates> ConvertAllToCoordinates(HashSet<PartyPlace> partyPlaces)
@@ -49,12 +45,10 @@ namespace night_life_sk.Mappers
             {
                 partyEvent = partyPlace.Events.FirstOrDefault();
             }
-            return new PlaceAndEventDto
-            {
-                Address = partyPlace.Address,
-                Name = partyPlace.Name,
-                EventDto = partyEvent != null ? eventMapper.ConvertToDTO(partyEvent) : null
-            };
+            return new PlaceAndEventDto(
+                partyPlace.Address,
+                partyPlace.Name,
+                partyEvent != null ? eventMapper.ConvertToDTO(partyEvent) : null);
         }
     }
 }

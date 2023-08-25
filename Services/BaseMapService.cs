@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using night_life_sk.Dto.Event;
 using night_life_sk.Dto.Place;
+using night_life_sk.Dto.User;
 using night_life_sk.Mappers;
 using night_life_sk.Models;
 using night_life_sk.Repositories.Event;
 using night_life_sk.Repositories.place;
+using night_life_sk.Repositories.user;
 
 namespace night_life_sk.Services
 {
@@ -12,15 +14,21 @@ namespace night_life_sk.Services
     {
         private readonly IPartyPlaceRepository partyPlaceRepository;
         private readonly IPartyEventRepository partyEventRepository;
+        private readonly IAppUserRepository appUserRepository;
         private readonly PartyEventMapper partyEventMapper;
         private readonly PartyPlaceMapper partyPlaceMapper;
+        private readonly AppUserMapper appUserMapper;
         
         public BaseMapService(
+            AppUserMapper appUserMapper,            
             PartyEventMapper eventMapper,
             PartyPlaceMapper partyPlaceMapper,
             IPartyPlaceRepository partyPlaceRepository,
-            IPartyEventRepository partyEventRepository) 
+            IPartyEventRepository partyEventRepository,
+            IAppUserRepository appUserRepository) 
         {
+            this.appUserRepository = appUserRepository;
+            this.appUserMapper = appUserMapper;
             this.partyEventRepository = partyEventRepository;
             this.partyEventMapper = eventMapper;
             this.partyPlaceMapper = partyPlaceMapper;
@@ -33,8 +41,11 @@ namespace night_life_sk.Services
         internal HashSet<PartyEventDto> GetEventsByDate(DateTime date) =>
             partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllEventsByDate(date));
 
-        internal HashSet<PartyEventDto> GetFilteredEvents(FilteredPlacesDto filteredPlaces) =>
-            partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllFilteredEvents(filteredPlaces));
+        internal HashSet<PartyEventDto> GetFilteredEvents(FilteredEventsDto filteredEvents) =>
+            partyEventMapper.ConvertAllToDTO(partyEventRepository.FindAllFilteredEvents(filteredEvents));
+
+        internal HashSet<AppUserDto> GetInterestedUsersForEvent(string eventName) =>
+            appUserMapper.ConvertAllToDTO(appUserRepository.FindAllByPartyName(eventName));
 
         internal PlaceAndEventDto GetPlaceAndEventOnClick(double longitude, double latitude, DateTime date) => 
             partyPlaceMapper.ConvertToOnClickClub(partyPlaceRepository.FindByXYTime(longitude, latitude, date));

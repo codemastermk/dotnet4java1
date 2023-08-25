@@ -17,6 +17,6 @@ namespace night_life_sk.Repositories.Event
 
         HashSet<PartyEvent> FindAllEventsByDate(DateTime date);
 
-        HashSet<PartyEvent> FindAllFilteredEvents(FilteredPlacesDto filteredPlaces);
+        HashSet<PartyEvent> FindAllFilteredEvents(FilteredEventsDto filteredEvents);
     }
 }

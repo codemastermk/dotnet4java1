@@ -20,5 +20,8 @@ namespace night_life_sk.Repositories.user
         public void Update(AppUser appUser) => entityPersistenceService.Update<AppUser>(appUser);
 
         public void Delete(int id) => entityPersistenceService.Delete<AppUser>(id);
+
+        public HashSet<AppUser> FindAllByPartyName(string eventName) => entityPersistenceService.FindAllGuestsByPartyName(eventName);
+        
     }
 }

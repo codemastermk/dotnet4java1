@@ -30,7 +30,7 @@ namespace night_life_sk.Repositories.Event
         public HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
             entityPersistenceService.FindAllEventsByDate(date);
 
-        HashSet<PartyEvent> IPartyEventRepository.FindAllFilteredEvents(FilteredPlacesDto filteredPlaces) =>
-            entityPersistenceService.FindAllFilteredEvents(filteredPlaces);
+        HashSet<PartyEvent> IPartyEventRepository.FindAllFilteredEvents(FilteredEventsDto filteredEvents) =>
+            entityPersistenceService.FindAllFilteredEvents(filteredEvents);
     }
 }
