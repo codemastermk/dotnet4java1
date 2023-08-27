@@ -14,6 +14,9 @@ namespace ConsoleTest
             {
                 Console.WriteLine(book);
             }
+            bookStore.Books.ToList().ForEach(book => Console.WriteLine(book));
+            Dictionary<int, string> dic = new Dictionary<int, string>();
         }
+
     }
 }
