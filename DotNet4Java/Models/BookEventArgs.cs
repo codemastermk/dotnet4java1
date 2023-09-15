@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Models
 {
-    internal class BookEventArgs
+    public class BookEventArgs
     {
         public string Message { get; set; }
 

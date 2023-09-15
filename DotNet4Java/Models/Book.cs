@@ -5,7 +5,6 @@
         public string Id { get; set; }
         public string Title { get; set; }
         public Author Author { get; set; }
-        public int? Year { get; set; }
         public string Genre { get; set; }
 
         public EventHandler<BookEventArgs> BookNotification;
@@ -22,15 +21,6 @@
             Title = title;
             Author = author;
             Genre = genre;
-        }
-
-        public IEnumerable<Book> GetBooks()
-        {
-            for (int i = 0; i < 10; i++)
-            {
-                var authur = new Author("First name " + i, "Last name " + i);
-                yield return new Book(Id = $"{i}", Title = $"Title {i}", Author = authur, Genre = "drama");
-            }
         }
 
         public override string ToString()
