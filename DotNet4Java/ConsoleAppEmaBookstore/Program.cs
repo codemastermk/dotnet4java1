@@ -14,10 +14,10 @@ namespace ConsoleAppEmaBookstore
             Console.WriteLine("Please choose book(s) you would like to buy in the following format 'ID;ID1;ID2...'!");
 
             var repo = new BookRepository();
-            var book = new Book();
+            var bookActions = new BookActions();
             Dictionary<string, Book> books = new Dictionary<string, Book>();
 
-            await foreach (var b in repo.GetBooks())
+            await foreach (var b in repo.GetBooksAsync())
             {
                 books.Add(b.Id, b);
                 Console.WriteLine(b);
@@ -27,8 +27,8 @@ namespace ConsoleAppEmaBookstore
             if (readLine != null)
             {
                 ShowSelectedBooks(books, readLine, out var booksToBuy);
-                SendNotifications(book);
-                book.buyBook(booksToBuy);
+                SendNotifications(bookActions);
+                bookActions.BuyBook(booksToBuy);
             }
         }
         private static void ShowSelectedBooks(Dictionary<string, Book> books, string readLine, out List<Book> returnBooks)
@@ -44,12 +44,12 @@ namespace ConsoleAppEmaBookstore
                 }
             }
         }
-        private static void SendNotifications(Book book)
+        private static void SendNotifications(BookActions bookActions)
         {
             var sms = new SmsService();
             var email = new MailServvice();
-            book.BookNotification += sms.Notify;
-            book.BookNotification += email.Notify;
+            bookActions.BookNotification += sms.Notify;
+            bookActions.BookNotification += email.Notify;
         }
         public static string[] ParseReadLine(string readLine)
         {

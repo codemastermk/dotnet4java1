@@ -4,9 +4,9 @@ namespace Data
 {
     public class BookRepository
     {
-        public async IAsyncEnumerable<Book> GetBooks()
+        public async IAsyncEnumerable<Book> GetBooksAsync()
         {
-            await foreach (var line in GetLines())
+            await foreach (var line in GetLinesAsync())
             {
                 var items = line.Split(",");
                 var author = new Author(items[2], items[3]);
@@ -19,7 +19,7 @@ namespace Data
                 };
             }
         }
-        public async IAsyncEnumerable<string> GetLines()
+        public async IAsyncEnumerable<string> GetLinesAsync()
         {  
             await foreach (var line in File.ReadLinesAsync("books.txt"))
             {
