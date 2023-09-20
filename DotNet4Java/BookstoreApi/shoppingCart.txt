@@ -1,0 +1,1 @@
+[{"Id":"08728cf0-438a-456f-add8-e12b9498ee6e","Title":"Harry Potter","Author":{"Id":"00000000-0000-0000-0000-000000000000","FirstName":"JK","LastName":"Rowling"},"Genre":"fantasy"}]

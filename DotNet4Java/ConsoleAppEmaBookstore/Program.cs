@@ -19,7 +19,7 @@ namespace ConsoleAppEmaBookstore
 
             await foreach (var b in repo.GetBooksAsync())
             {
-                books.Add(b.Id, b);
+                //books.Add(b.Id, b);
                 Console.WriteLine(b);
             }
 
