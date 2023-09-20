@@ -3,6 +3,8 @@ using Bookstore.RequestModels;
 using Bookstore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Bookstore.Repository;
+using static Bookstore.API.Configuration.DependencyDelegate;
+using Bookstore.API.Configuration;
 
 namespace Bookstore.API.Controllers
 {
@@ -11,10 +13,27 @@ namespace Bookstore.API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly AuthorService _authorService;
+        private readonly ISerialNumber _serialNumber;
+        private readonly IComplexSerialNumber _complexSerialNumber;
+        private readonly ILogger<AuthorsController> _logger;
+        private readonly ISerialNumber _factorySerialNumber;
+        private readonly ISerialNumber _resolvedSerialNumber;
 
-        public AuthorsController()
+        public AuthorsController(AuthorService authorService, 
+            IEnumerable<ISerialNumber> serialNumbers, 
+            // [FromKeyedServices("Simple")]ISerialNumber serialNumber8,
+            IComplexSerialNumber complexSerialNumber,
+            SerialNumberResolver resolver,
+            IDependencyFactory dependencyFactory,
+            ILogger<AuthorsController> logger
+            )
         {
-            _authorService = new AuthorService(new AuthorsRepository());
+            _authorService = authorService;
+            this._serialNumber = serialNumbers.Where(x => x.GetType() == typeof(SerialNumber)).First();
+            this._complexSerialNumber = complexSerialNumber;
+            _logger = logger;
+            _factorySerialNumber = dependencyFactory.GetDependency("Original");
+            _resolvedSerialNumber = resolver("Original");
         }
 
         [HttpGet]
@@ -49,6 +68,19 @@ namespace Bookstore.API.Controllers
             _authorService.RemoveAuthor(guid);
 
             return Ok();
+        }
+
+        [HttpGet]
+        public IActionResult GetSerialNumber()
+        {
+            _logger.LogCritical("This is a critical value {SomeValue} {SomeOtherValue}", _factorySerialNumber.GetSerialNumber(), _serialNumber.GetSerialNumber());
+            List<string> serials = _complexSerialNumber.GetComplexSerialNumber();
+
+            serials.Add(_serialNumber.GetSerialNumber());
+            serials.Add(_resolvedSerialNumber.GetSerialNumber());
+            serials.Add(_factorySerialNumber.GetSerialNumber());
+
+            return Ok(serials);
         }
     }
 }
