@@ -9,12 +9,11 @@ namespace Data
             await foreach (var line in GetLinesAsync())
             {
                 var items = line.Split(",");
-                var author = new Author(items[2], items[3]);
+                //var author = new Author(items[2], items[3]);
                 yield return new Book
                 {
-                    Id = items[0],
                     Title = items[1],
-                    Author = author,
+                    Author = null,
                     Genre = items[4],
                 };
             }

@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Models
+namespace RequestModels
 {
-    public class Author
+    public class ShoppingCartRequest
     {
         public Guid Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
 
-     
     }
 }
