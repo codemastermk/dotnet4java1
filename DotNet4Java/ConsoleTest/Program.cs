@@ -15,7 +15,7 @@ namespace ConsoleTest
                 Console.WriteLine("Cleaning up...");
                 Environment.Exit(0);
             };
-            IBookStoreService BookStoreService = InitBookStore();
+            BookStoreService BookStoreService = InitBookStore();
 
             Console.WriteLine("Welcome to the BookStore!");
             while (true)
@@ -27,7 +27,7 @@ namespace ConsoleTest
 
         }
 
-        private static IBookStoreService InitBookStore()
+        private static BookStoreService InitBookStore()
         {
             BookStore BookStore = new BookStore();
 
@@ -63,7 +63,7 @@ namespace ConsoleTest
             DonaldDuck = new Author("Donald Duck");
         }
 
-        private static void ProcessChoice(Choice choice, IBookStoreService BookStoreService)
+        private static void ProcessChoice(Choice choice, BookStoreService BookStoreService)
         {
 
             switch (choice)
@@ -78,7 +78,7 @@ namespace ConsoleTest
             }
         }
 
-        private static void SellBook(IBookStoreService bookStoreService)
+        private static void SellBook(BookStoreService bookStoreService)
         {
             Console.WriteLine("Type the title of the book to sell:");
 
@@ -87,7 +87,7 @@ namespace ConsoleTest
             bookStoreService.SellBook(title);
         }
 
-        private static void ViewBook(IBookStoreService bookStoreService)
+        private static void ViewBook(BookStoreService bookStoreService)
         {
             Console.WriteLine("Type the title of the book to view: ");
             string title = Console.ReadLine();
@@ -101,7 +101,7 @@ namespace ConsoleTest
             Environment.Exit(0);
         }
 
-        private static void ListBooks(IBookStoreService BookStoreService)
+        private static void ListBooks(BookStoreService BookStoreService)
         {
             BookStoreService.PrintBooks();
         }
