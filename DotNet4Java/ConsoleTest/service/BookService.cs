@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace ConsoleTest.service
 {
-    internal interface BookStoreService
+    internal interface BookService
     {
-        void SellBook(string title);
-        void PrintBooks();
-
-        IEnumerable<String> GetTitles();
-        Book GetBook(String title);
+        Book BuyBook(String title);
+        List<Book> GetBooks();
+        List<String> GetTitles();
     }
 }

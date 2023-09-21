@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleTest.service.impl
 {
-    internal class BookStoreServiceImpl : IBookStoreService
+    internal class BookStoreServiceImpl : BookStoreService
     {
         private BookStore BookStore { get; set; }
 
