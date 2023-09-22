@@ -9,10 +9,23 @@ namespace Bookstore.Models
     public class Book
     {
         public Guid Id { get; set; }
+
+        [Bookstore("Book tittle")]
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public List<Author> Authors { get; set; } = new List<Author>();
         public string ISBN { get; set; } = string.Empty;
         public decimal Price { get; set; }
     }
+}
+
+
+public class BookstoreAttribute : Attribute
+{
+    public BookstoreAttribute(string name)
+    {
+        Name = name;
+    }
+
+    public string Name { get; }
 }

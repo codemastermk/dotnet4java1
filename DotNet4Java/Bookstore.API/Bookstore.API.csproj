@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Bookstore.Models\Bookstore.Models.csproj" />
+    <ProjectReference Include="..\Bookstore.Nlog\Bookstore.Nlog.csproj" />
     <ProjectReference Include="..\Bookstore.Repository\Bookstore.Repository.csproj" />
     <ProjectReference Include="..\Bookstore.RequestModels\Bookstore.RequestModels.csproj" />
     <ProjectReference Include="..\Bookstore.Services\Bookstore.Services.csproj" />
