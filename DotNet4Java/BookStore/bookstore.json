@@ -1,0 +1,19 @@
+[
+  {
+    "Edition": {
+      "authors": [
+        {
+          "FirstName": "J. K.",
+          "LastName": " Rowling",
+          "Description": "She has performed adult education stuff",
+          "BookEditions": [
+
+          ]
+        }
+      ],
+      "Title": "Harry Potter and the Goblet of fire",
+      "ISBN": 1231548684321
+    },
+    "Price": 500
+  }
+]
