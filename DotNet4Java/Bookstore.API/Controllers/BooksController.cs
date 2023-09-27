@@ -7,7 +7,8 @@ using Bookstore.Repository;
 namespace Bookstore.API.Controllers
 {
     [ApiController]
-    [Route("[controller]/[action]")]
+    [Route("api/v{version:apiVersion}[controller]")]
+    
     public class BooksController : ControllerBase
     {
         private readonly BookService _bookService;
@@ -19,10 +20,25 @@ namespace Bookstore.API.Controllers
             _authorService = new AuthorService(new AuthorsRepository());
         }
 
+        /// <summary>
+        /// Gets All Books
+        /// </summary>
+        /// <returns>List of Books</returns>
+        /// <response code="200">Books</response>
+        /// <response code="400">Error</response>
         [HttpGet]
-        public IEnumerable<Book> GetBooks()
+        [ApiVersion("1.0")]
+        public async Task<IActionResult> GetBooks()
         {
-            return _bookService.GetBooks();
+            try
+            {
+               return Ok(_bookService.GetBooks());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [HttpGet("{id}")]
@@ -31,6 +47,19 @@ namespace Bookstore.API.Controllers
             return Ok(_bookService.GetBookById(id));
         }
 
+        /// <summary>
+        /// Create Book
+        /// </summary>
+        /// <returns>Created Books</returns>
+        /// <remarks>
+        /// Sample Request: 
+        ///     POST /AddBook
+        ///     {
+        ///         "title": "some title",
+        ///         "description": "some description"
+        ///     }
+        /// </remarks>
+        /// <response code="201">Book</response>
         [HttpPost]
         public IActionResult AddBook(BookRequest bookRequest)
         {

@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Bookstore.Repository;
 using static Bookstore.API.Configuration.DependencyDelegate;
 using Bookstore.API.Configuration;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
+    [Authorize]
     public class AuthorsController : ControllerBase
     {
         private readonly AuthorService _authorService;
