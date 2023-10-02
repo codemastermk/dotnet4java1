@@ -3,9 +3,9 @@ using night_life_sk.Models;
 
 namespace night_life_sk.Mappers
 {
-    public class PartyEventMapper
+    internal static class PartyEventMapper
     {
-        public PartyEventDto ConvertToDTO(PartyEvent partyEvent) 
+        internal static PartyEventDto ConvertToDTO(PartyEvent partyEvent) 
         {
             return new PartyEventDto(
                 partyEvent.Name,
@@ -18,7 +18,7 @@ namespace night_life_sk.Mappers
                 partyEvent.PartyPlace?.Longitude);
         }
 
-        internal HashSet<PartyEventDto> ConvertAllToDTO(HashSet<PartyEvent> partyEvents) => 
-            partyEvents.Select(e => ConvertToDTO(e)).ToHashSet();
+        internal static HashSet<PartyEventDto> ConvertAllToDTO(Task<List<PartyEvent>> partyEvents) => 
+            partyEvents.Result.Select(e => ConvertToDTO(e)).ToHashSet();
     }
 }

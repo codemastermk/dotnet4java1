@@ -3,13 +3,8 @@ using night_life_sk.Models;
 
 namespace night_life_sk.Mappers
 {
-    public class PartyPlaceMapper
+    internal static class PartyPlaceMapper
     {
-        private readonly PartyEventMapper eventMapper;
-        public PartyPlaceMapper(PartyEventMapper eventMapper)
-        {
-            this.eventMapper = eventMapper;
-        }
 
         private static PartyPlaceDto ConvertToDTO(PartyPlace partyPlace)
         {
@@ -28,27 +23,28 @@ namespace night_life_sk.Mappers
                 partyPlace.Longitude);
         }
 
-        public HashSet<PlaceCoordinates> ConvertAllToCoordinates(HashSet<PartyPlace> partyPlaces)
+        internal static HashSet<PlaceCoordinates> ConvertAllToCoordinates(Task<List<PartyPlace>> partyPlaces)
         {
-            return partyPlaces.Select(place => ConvertToCoordinates(place)).ToHashSet();
+            return partyPlaces.Result.Select(place => ConvertToCoordinates(place)).ToHashSet();
         }
 
-        public HashSet<PartyPlaceDto> ConvertAllToDTO(HashSet<PartyPlace> partyPlaces)
+        internal static HashSet<PartyPlaceDto> ConvertAllToDTO(HashSet<PartyPlace> partyPlaces)
         {
             return partyPlaces.Select(place => ConvertToDTO(place)).ToHashSet();
         }
 
-        public PlaceAndEventDto ConvertToOnClickClub(PartyPlace partyPlace)
+        internal static PlaceAndEventDto ConvertToOnClickClub(Task<PartyPlace> partyPlace)
         {
             PartyEvent? partyEvent = null;
-            if (partyPlace.Events != null)
+            var result = partyPlace.Result;
+            if (result.Events != null)
             {
-                partyEvent = partyPlace.Events.FirstOrDefault();
+                partyEvent = result.Events.FirstOrDefault();
             }
             return new PlaceAndEventDto(
-                partyPlace.Address,
-                partyPlace.Name,
-                partyEvent != null ? eventMapper.ConvertToDTO(partyEvent) : null);
+                result.Address,
+                result.Name,
+                partyEvent != null ? PartyEventMapper.ConvertToDTO(partyEvent) : null);
         }
     }
 }

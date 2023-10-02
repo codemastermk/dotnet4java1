@@ -3,7 +3,7 @@ using night_life_sk.Dto.User;
 
 namespace night_life_sk.Mappers
 {
-    public class AppUserMapper
+    internal static class AppUserMapper
     {
 
         private static AppUserDto ConvertToDTO(AppUser appUser)
@@ -11,9 +11,9 @@ namespace night_life_sk.Mappers
             return new AppUserDto(appUser.Username);
         }
 
-        public HashSet<AppUserDto> ConvertAllToDTO(HashSet<AppUser> appUsers)
+        internal static HashSet<AppUserDto> ConvertAllToDTO(Task<HashSet<AppUser>> appUsers)
         {
-            return appUsers.Select(user => ConvertToDTO(user)).ToHashSet();
+            return appUsers.Result.Select(user => ConvertToDTO(user)).ToHashSet();
         }
     }
 }

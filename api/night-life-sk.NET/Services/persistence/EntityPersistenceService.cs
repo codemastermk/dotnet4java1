@@ -1,76 +1,82 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using night_life_sk.Data;
 using night_life_sk.Dto.Place;
 using night_life_sk.Exceptions;
 using night_life_sk.Models;
-using System;
-using Dapper;
-
 
 namespace night_life_sk.Services.persistence
 {
-    public interface IEntity
-    {
-        int Id { get; set; }
-    }
 
-    public class EntityPersistenceService
+    internal class EntityPersistenceService
     {
+        private readonly ILogger<EntityPersistenceService> logger;
         private readonly ScopedServiceProvider scopedServiceProvider;
 
-        public EntityPersistenceService(ScopedServiceProvider scopedServiceProvider)
+        public EntityPersistenceService(ScopedServiceProvider scopedServiceProvider,
+            ILogger<EntityPersistenceService> logger)
         {
             this.scopedServiceProvider = scopedServiceProvider;
+            this.logger = logger;
         }
 
-        public void Add<T>(T entity) where T : class => scopedServiceProvider
-            .ExecuteActionInScope(dataContext => PersistEntity(entity, dataContext));
-
-        private static void PersistEntity<T>(T entity, DataContext dataContext) where T : class
+        internal async Task Add<T>(T entity) where T : class
         {
-            dataContext.Set<T>().Add(entity);
-            dataContext.SaveChanges();
+            await scopedServiceProvider.ExecuteActionInScopeAsync(
+                dataContext => PersistEntity(entity, dataContext));
         }
 
-        public HashSet<T> FindAll<T>() where T : class => scopedServiceProvider
-            .ExecuteFuncInScope(dataContext => dataContext.Set<T>().ToHashSet());
-
-        public T FindById<T>(int id) where T : class
+        private async Task PersistEntity<T>(T entity, DataContext dataContext) where T : class
         {
-            T? entity = scopedServiceProvider
-                .ExecuteFuncInScope(dataContext => dataContext.Set<T>().Find(id));
+            try
+            {
+                dataContext.Set<T>().Add(entity);
+                await dataContext.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "ERROR: {ErrorMessage}", e.Message);
+                throw new NightLifeException($"Something went wrong during persistence {e.StackTrace}", e);
+            }
+        }
+
+        internal Task<List<T>> FindAll<T>() where T : class => scopedServiceProvider
+            .ExecuteFuncInScopeAsync(dataContext => dataContext.Set<T>().ToListAsync());
+
+        internal async Task<T> FindById<T>(int id) where T : class
+        {
+            T? entity = await scopedServiceProvider
+                .ExecuteFuncInScopeAsync(async dataContext => await dataContext.Set<T>().FindAsync(id));
             return entity ?? throw new NightLifeException("Party Event not found!");
         }
 
-        public void Update<T>(T entity) where T : class => scopedServiceProvider
-            .ExecuteActionInScope(dataContext => UpdateEntity(entity, dataContext));
+        internal Task Update<T>(T entity) where T : class => scopedServiceProvider
+            .ExecuteActionInScopeAsync(dataContext => UpdateEntity(entity, dataContext));
 
-        private static void UpdateEntity<T>(T entity, DataContext dataContext) where T : class
+        private static async Task UpdateEntity<T>(T entity, DataContext dataContext) where T : class
         {
             dataContext.Attach(entity);
             dataContext.Entry(entity).State = EntityState.Modified;
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public void Delete<T>(int id) where T : class, IEntity, new() => scopedServiceProvider
-            .ExecuteActionInScope(dataContext => DeleteEntity<T>(id, dataContext));
+        internal Task Delete<T>(int id) where T : class, IEntity, new() => scopedServiceProvider
+            .ExecuteActionInScopeAsync(dataContext => DeleteEntity<T>(id, dataContext));
 
-        private static void DeleteEntity<T>(int id, DataContext dataContext) where T : class, IEntity, new()
+        private static async Task DeleteEntity<T>(int id, DataContext dataContext) where T : class, IEntity, new()
         {
             var entity = new T { Id = id };
             dataContext.Set<T>().Attach(entity);
             dataContext.Set<T>().Remove(entity);
-            dataContext.SaveChanges();
+            await dataContext.SaveChangesAsync();
         }
 
-        public PartyPlace FindByXYTime(double latitude, double longitude, DateTime dateTime)
+        internal Task<PartyPlace> FindByXYTime(double latitude, double longitude, DateTime dateTime)
         {
-            PartyPlace GetPartyPlaceByXYTime(DataContext dataContext)
+            async Task<PartyPlace> GetPartyPlaceByXYTime(DataContext dataContext)
             {
-                var place = dataContext.PartyPlaces
-                    .FirstOrDefault(p => p.Latitude == latitude && p.Longitude == longitude);
+                var place = await dataContext.PartyPlaces
+                    .FirstOrDefaultAsync(p => p.Latitude == latitude && p.Longitude == longitude);
 
                 if (place != null)
                 {
@@ -86,77 +92,84 @@ namespace night_life_sk.Services.persistence
                 throw new NightLifeException("Place not found");
             }
 
-            return scopedServiceProvider.ExecuteFuncInScope(dataContext => GetPartyPlaceByXYTime(dataContext));
+            return scopedServiceProvider.ExecuteFuncInScopeAsync(dataContext => GetPartyPlaceByXYTime(dataContext));
         }
 
-        internal HashSet<PartyEvent> FindAllEventsByDate(DateTime date) =>
-            scopedServiceProvider.ExecuteFuncInScope(
-                dataContext => dataContext.PartyEvents
-                    .Where(e => e.EventTime.Date == date)
-                    .ToHashSet());
+        internal Task<List<PartyEvent>> FindAllFilteredEvents(FilteredEventsDto filteredEvents)
+        {
+            return scopedServiceProvider.ExecuteFuncInScopeAsync(async dataContext =>
+            {
+                return await FilterEvents(filteredEvents, dataContext);
+            });
+        }
 
-        internal HashSet<PartyEvent> FindAllFilteredEvents(FilteredEventsDto filteredEvents) =>
-            scopedServiceProvider.ExecuteFuncInScope(dataContext => FilterEvents(filteredEvents, dataContext));
-
-        private static HashSet<PartyEvent> FilterEvents(FilteredEventsDto filteredEvents, DataContext dataContext)
+        private static Task<List<PartyEvent>> FilterEvents(FilteredEventsDto filteredEvents, DataContext dataContext)
         {
             if (filteredEvents.Date == null)
             {
                 throw new NightLifeException("Date is missing");
             }
 
-            Func<DataContext, HashSet<PartyEvent>> filteredEventsFunc = FilterEventsByGenrePriceDate(filteredEvents);
+            Func<DataContext, Task<List<PartyEvent>>> filteredEventsFunc = FilterEventsByGenrePriceDate(filteredEvents);
             return filteredEventsFunc(dataContext);
         }
 
-        private static Func<DataContext, HashSet<PartyEvent>> FilterEventsByGenrePriceDate(FilteredEventsDto filteredEvents)
+        private static Func<DataContext, Task<List<PartyEvent>>> FilterEventsByGenrePriceDate(FilteredEventsDto filteredEvents)
         {
-
             if (filteredEvents.Genre != null && filteredEvents.Price != null)
             {
-                return (data) => data.PartyEvents
-                .Where(
-                    e =>
-                    e.EventTime == filteredEvents.Date &&
-                    e.Genre == filteredEvents.Genre &&
-                    e.Price == filteredEvents.Price)
-                .ToHashSet();
+                return async (data) =>
+                {
+                    return (await data.PartyEvents
+                        .Where(e =>
+                            e.EventTime == filteredEvents.Date &&
+                            e.Genre == filteredEvents.Genre &&
+                            e.Price == filteredEvents.Price)
+                        .ToListAsync());
+                };
             }
             else if (filteredEvents.Genre == null && filteredEvents.Price != null)
             {
-                return (data) => data.PartyEvents
-                .Where(
-                    e =>
-                    e.EventTime == filteredEvents.Date &&
-                    e.Price == filteredEvents.Price)
-                .ToHashSet();
+                return async (data) =>
+                {
+                    return (await data.PartyEvents
+                        .Where(e =>
+                            e.EventTime == filteredEvents.Date &&
+                            e.Price == filteredEvents.Price)
+                        .ToListAsync());
+                };
             }
             else if (filteredEvents.Genre != null)
             {
-                return (data) => data.PartyEvents
-                .Where(
-                    e =>
-                    e.EventTime == filteredEvents.Date &&
-                    e.Genre == filteredEvents.Genre)
-                .ToHashSet();
+                return async (data) =>
+                {
+                    return (await data.PartyEvents
+                        .Where(e =>
+                            e.EventTime == filteredEvents.Date &&
+                            e.Genre == filteredEvents.Genre)
+                        .ToListAsync());
+                };
             }
             else
             {
-                return (data) => data.PartyEvents
-                .Where(
-                    e => e.EventTime == filteredEvents.Date)
-                .ToHashSet();
+                return async (data) =>
+                {
+                    return (await data.PartyEvents
+                        .Where(e => e.EventTime == filteredEvents.Date)
+                        .ToListAsync());
+                };
             }
         }
 
-        internal HashSet<AppUser> FindAllGuestsByPartyName(string eventName) => scopedServiceProvider
-            .ExecuteFuncInScope(dataContext => FindGuestsByEvent(eventName, dataContext));
-            
-        private static HashSet<AppUser> FindGuestsByEvent(string eventName, DataContext dataContext)
+        internal Task<HashSet<AppUser>> FindGuestByPartyName(string name) =>
+                scopedServiceProvider.ExecuteFuncInScopeAsync(
+                    data => FindGuestsByEvent(name, data));
+
+        private static async Task<HashSet<AppUser>> FindGuestsByEvent(string eventName, DataContext dataContext)
         {
-            PartyEvent? partyEvent = dataContext.PartyEvents
+            PartyEvent? partyEvent = await dataContext.PartyEvents
             .Include(e => e.AppUsers)
-            .FirstOrDefault(e => e.Name == eventName);
+            .FirstOrDefaultAsync(e => e.Name == eventName);
 
             if (partyEvent?.AppUsers != null)
             {
@@ -164,6 +177,12 @@ namespace night_life_sk.Services.persistence
             }
 
             return new HashSet<AppUser>();
+        }
+
+        internal Task<List<PartyEvent>> FindAllEventsByDate(DateTime date)
+        {
+           return scopedServiceProvider.ExecuteFuncInScopeAsync(data => 
+           data.PartyEvents.Where(e => e.EventTime.Equals(date)).ToListAsync());
         }
     }
 }
