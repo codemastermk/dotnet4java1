@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "lrK8VXD+wf1jaWw6UBTolcUh0izMFMXbDd5kale2ntG/EhHigkxo2vOeWPbutspcAEW0d7oExAKOXBhRdl1UrQ==",
+  "success": true,
+  "projectFilePath": "D:\\dotnet4java1\\MileConsole\\MileConsole.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\stanislavov\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}
