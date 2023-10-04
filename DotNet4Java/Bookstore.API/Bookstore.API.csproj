@@ -11,10 +11,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.11">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Bookstore.Data\Bookstore.Data.csproj" />
     <ProjectReference Include="..\Bookstore.Models\Bookstore.Models.csproj" />
     <ProjectReference Include="..\Bookstore.Nlog\Bookstore.Nlog.csproj" />
     <ProjectReference Include="..\Bookstore.Repository\Bookstore.Repository.csproj" />

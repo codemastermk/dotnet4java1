@@ -1,11 +1,13 @@
 using Bookstore.API.Configuration;
 using Bookstore.API.Filters;
 using Bookstore.API.Middleware;
+using Bookstore.Data;
 using Bookstore.Models;
 using Bookstore.Repository;
 using Bookstore.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
@@ -21,7 +23,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 options.Filters.Add(new ConsoleActionFilterAttribute("Program")));
 
-
+builder.Services.AddDbContext<BookstoreContext>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionsStrings:DefaultConnection")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

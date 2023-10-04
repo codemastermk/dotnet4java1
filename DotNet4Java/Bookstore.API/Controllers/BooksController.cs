@@ -3,6 +3,7 @@ using Bookstore.RequestModels;
 using Bookstore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Bookstore.Repository;
+using Bookstore.Data;
 
 namespace Bookstore.API.Controllers
 {
@@ -13,9 +14,10 @@ namespace Bookstore.API.Controllers
     {
         private readonly BookService _bookService;
         private readonly AuthorService _authorService;
-
-        public BooksController()
+        private readonly BookstoreContext _dbContext;
+        public BooksController(BookstoreContext context)
         {
+            _dbContext = context;
             _bookService = new BookService();
             _authorService = new AuthorService(new AuthorsRepository());
         }
@@ -32,6 +34,8 @@ namespace Bookstore.API.Controllers
         {
             try
             {
+               var result = await _dbContext.CountAuthorsAsync();
+               
                return Ok(_bookService.GetBooks());
             }
             catch (Exception ex)
