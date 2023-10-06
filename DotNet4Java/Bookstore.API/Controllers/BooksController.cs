@@ -4,6 +4,7 @@ using Bookstore.Services;
 using Microsoft.AspNetCore.Mvc;
 using Bookstore.Repository;
 using Bookstore.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.API.Controllers
 {
@@ -34,9 +35,24 @@ namespace Bookstore.API.Controllers
         {
             try
             {
-               var result = await _dbContext.CountAuthorsAsync();
-               
-               return Ok(_bookService.GetBooks());
+
+                var query = from b in _dbContext.Books
+                            join a in _dbContext.Authors
+                            on b.AuthorId equals a.Id
+                            select b;
+                var result = await query.ToArrayAsync();
+
+                //var id = 1;
+                //var result = await _dbContext.Books.FromSqlInterpolated(@$"select * from books where id = {1}").Include(a => a.Author).ToListAsync();
+
+                // explicit
+                //var author = _dbContext.Authors.Single(a => a.Id == 1);
+                //_dbContext.Entry(author).Collection(b => b.Books).Load();
+                
+                // eager
+                //var result = _dbContext.Authors.Include(b => b.Books).Skip(0).Take(10).ToList();
+                
+                return Ok(_bookService.GetBooks());
             }
             catch (Exception ex)
             {
@@ -45,9 +61,24 @@ namespace Bookstore.API.Controllers
             
         }
 
+
         [HttpGet("{id}")]
         public IActionResult GetBookById([FromRoute] Guid id)
         {
+            // no tracking
+            // var result = await _dbContext.Books.AsNoTracking().ToListAsync();
+
+            // var book = _dbContext.Books.FirstOrDefault();
+
+            // if(book == null)
+            // {
+            //    return NotFound();
+            // }
+
+            // var result = _dbContext.Books.OrderBy(x => x.Id).AsEnumerable();
+            // result = result.Where(x => x.Description.Contains("3"));
+            // var result = await _dbContext.CountAuthorsAsync();
+
             return Ok(_bookService.GetBookById(id));
         }
 

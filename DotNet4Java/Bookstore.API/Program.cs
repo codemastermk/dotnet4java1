@@ -13,6 +13,7 @@ using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using System.Reflection;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var myPolicy = "myPolicy";
 
@@ -21,7 +22,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers(options =>
-options.Filters.Add(new ConsoleActionFilterAttribute("Program")));
+options.Filters.Add(new ConsoleActionFilterAttribute("Program"))).AddJsonOptions(o => { o.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+
 
 builder.Services.AddDbContext<BookstoreContext>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("ConnectionsStrings:DefaultConnection")));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
