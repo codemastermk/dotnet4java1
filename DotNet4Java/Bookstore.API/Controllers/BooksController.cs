@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Bookstore.Repository;
 using Bookstore.Data;
 using Microsoft.EntityFrameworkCore;
+using Bookstore.Data.Models;
 
 namespace Bookstore.API.Controllers
 {
@@ -98,19 +99,30 @@ namespace Bookstore.API.Controllers
         [HttpPost]
         public IActionResult AddBook(BookRequest bookRequest)
         {
-            var book = new Book
+            var author = _dbContext.Authors.FirstOrDefault(a => a.Id == 1);
+            var result = new Data.Models.Book()
             {
-                Id = Guid.NewGuid(),
-                Title = bookRequest.Title,
-                Description = bookRequest.Description,
-                ISBN = bookRequest.ISBN,
-                Price = bookRequest.Price,
-                Authors = bookRequest.Authors.Select(_authorService.GetAuthorById).ToList(),
+                ISBN = "11111",
+                Title = "some title",
+                Author = author,
             };
 
-            _bookService.AddBook(book);
+            _dbContext.Books.Add(result);
+            _dbContext.SaveChanges();
+            //var book = new Book
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Title = bookRequest.Title,
+            //    Description = bookRequest.Description,
+            //    ISBN = bookRequest.ISBN,
+            //    Price = bookRequest.Price,
+            //    Authors = bookRequest.Authors.Select(_authorService.GetAuthorById).ToList(),
+            //};
 
-            return CreatedAtAction(nameof(GetBookById), new { id = book.Id }, book);
+            //_bookService.AddBook(book);
+
+            //return CreatedAtAction(nameof(GetBookById), new { id = book.Id }, book);
+            return Ok();
         }
 
         [HttpDelete]

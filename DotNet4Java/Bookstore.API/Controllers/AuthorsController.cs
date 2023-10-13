@@ -6,6 +6,9 @@ using Bookstore.Repository;
 using static Bookstore.API.Configuration.DependencyDelegate;
 using Bookstore.API.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using Bookstore.Data;
+using Microsoft.EntityFrameworkCore;
+using Bookstore.Data.Models;
 
 namespace Bookstore.API.Controllers
 {
@@ -20,6 +23,7 @@ namespace Bookstore.API.Controllers
         private readonly ILogger<AuthorsController> _logger;
         private readonly ISerialNumber _factorySerialNumber;
         private readonly ISerialNumber _resolvedSerialNumber;
+        private readonly BookstoreContext _context;
 
         public AuthorsController(AuthorService authorService, 
             IEnumerable<ISerialNumber> serialNumbers, 
@@ -27,7 +31,8 @@ namespace Bookstore.API.Controllers
             IComplexSerialNumber complexSerialNumber,
             SerialNumberResolver resolver,
             IDependencyFactory dependencyFactory,
-            ILogger<AuthorsController> logger
+            ILogger<AuthorsController> logger,
+            BookstoreContext context
             )
         {
             _authorService = authorService;
@@ -36,13 +41,14 @@ namespace Bookstore.API.Controllers
             _logger = logger;
             _factorySerialNumber = dependencyFactory.GetDependency("Original");
             _resolvedSerialNumber = resolver("Original");
+            _context = context;
         }
 
-        [HttpGet]
-        public IEnumerable<Author> GetAuthors()
-        {
-            return _authorService.GetAuthors();
-        }
+        //[HttpGet]
+        //public IEnumerable<Author> GetAuthors()
+        //{
+        //    return _authorService.GetAuthors();
+        //}
 
         [HttpGet("{id}", Name = "GetSingleAuthor")]
         public IActionResult GetAuthorById([FromRoute] Guid id)
@@ -53,21 +59,48 @@ namespace Bookstore.API.Controllers
         [HttpPost]
         public IActionResult AddAuthor(AuthorRequest authorRequest)
         {
-            var author = new Author
+            //using var transaction = _context.Database.BeginTransaction();
+            try
             {
-                Id = Guid.NewGuid(),
-                Name = authorRequest.Name,
-            };
 
-            _authorService.AddAuthor(author);
+                var author = new Data.Models.Author { Name = "Author Name" };
+                _context.Authors.Add(author);
+                //_context.SaveChanges();
+                //transaction.CreateSavepoint("treter");
 
-            return CreatedAtRoute("GetSingleAuthor", new { id = author.Id }, author);
+                _context.Books.Add(new Data.Models.Book { Title = "Some Title", Author =  author});
+                _context.SaveChanges();
+                
+                //transaction.Commit();
+
+                return Ok();
+            }
+            catch(Exception ex)
+            {
+                //transaction.RollbackToSavepoint("");
+                //transaction.Rollback();
+                return BadRequest(ex.Message);
+            }
+                       
+            
+            //var author = new Author
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Name = authorRequest.Name,
+            //};
+
+            //_authorService.AddAuthor(author);
+
+            //return CreatedAtRoute("GetSingleAuthor", new { id = author.Id }, author);
         }
 
         [HttpDelete]
-        public IActionResult RemoveAuthor(Guid guid)
+        public IActionResult RemoveAuthor(int id)
         {
-            _authorService.RemoveAuthor(guid);
+            var author = _context.Authors.Find(id);
+            _context.Authors.Remove(author);
+            _context.SaveChanges();
+            //_authorService.RemoveAuthor(guid);
 
             return Ok();
         }
