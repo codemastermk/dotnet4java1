@@ -1,45 +1,16 @@
-﻿using Bookstore.Models;
-using System.Text.Json;
+﻿using Bookstore.Data;
+using Bookstore.Data.Models;
+using Bookstore.Repository.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.Repository
 {
-    public class AuthorsRepository
+    public class AuthorsRepository : BaseRepository<Author>, IAuthorsRepository
     {
-        public static string authorsFileName = "authors.txt";
-        public static List<Author> _authors = new List<Author>();
-
-        public IEnumerable<Author> GetAuthors()
+        private readonly BookstoreContext _context;
+        public AuthorsRepository(BookstoreContext context) : base(context) 
         {
-            var json = File.ReadAllText(authorsFileName);
-
-            _authors = JsonSerializer.Deserialize<List<Author>>(json);
-
-            return _authors;
+            _context = context;
         }
-
-        public Author GetAuthor(Guid id)
-        {
-            return _authors.First(author => author.Id == id);
-        }
-
-        public void AddAuthor(Author author)
-        {
-            _authors.Add(author);
-
-            var json = JsonSerializer.Serialize(_authors);
-
-            File.WriteAllText(authorsFileName, json);
-        }
-
-        public void RemoveAuthor(Guid id)
-        {
-            var author = _authors.First(author => author.Id.Equals(id));
-            _authors.Remove(author);
-
-            var json = JsonSerializer.Serialize(_authors);
-
-            File.WriteAllText(authorsFileName, json);
-        }
-
     }
 }

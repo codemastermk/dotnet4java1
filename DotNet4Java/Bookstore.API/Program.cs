@@ -117,8 +117,10 @@ builder.Services.AddApiVersioning(options =>
     options.ApiVersionReader = new UrlSegmentApiVersionReader();
 });
 
-builder.Services.AddSingleton<AuthorsRepository>();
-builder.Services.AddSingleton<AuthorService>();
+builder.Services.AddTransient<IBookRepository, BookRepository>();
+builder.Services.AddTransient<IAuthorsRepository, AuthorsRepository>();
+builder.Services.AddTransient<IBookService, BookService>();
+builder.Services.AddTransient<IAuthorService, AuthorService>();
 
 builder.Services.AddScoped<ISerialNumber, SimpleSerialNumber>();
 builder.Services.AddScoped<ISerialNumber, SerialNumber>();
