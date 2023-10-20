@@ -3,32 +3,32 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.Repository.Base
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class BaseRepository<TEntity, TContext> : IBaseRepository<TEntity> where TEntity : class where TContext : DbContext
     {
-        public readonly BookstoreContext _context;
-        public readonly DbSet<T> _entity;
-        public BaseRepository(BookstoreContext context)
+        public readonly TContext _context;
+        public readonly DbSet<TEntity> _entity;
+        public BaseRepository(TContext context)
         {
             _context = context;
-            _entity = context.Set<T>();
+            _entity = context.Set<TEntity>();
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<TEntity>> GetAllAsync()
         {
             return await _entity.ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsync(int id)
+        public async Task<TEntity?> GetByIdAsync(int id)
         {
             return await _entity.FindAsync(id);
         }
 
-        public async Task InsertAsync(T t)
+        public async Task InsertAsync(TEntity t)
         {
             await _entity.AddAsync(t);
         }
 
-        public void Update(T t)
+        public void Update(TEntity t)
         {
             _entity.Update(t);
         }
@@ -40,11 +40,6 @@ namespace Bookstore.Repository.Base
             {
                 _context.Remove(t);
             }
-        }
-
-        public async Task CommitAsync()
-        {
-            await _context.SaveChangesAsync();
         }
     }
 }

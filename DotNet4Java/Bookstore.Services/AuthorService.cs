@@ -5,17 +5,15 @@ namespace Bookstore.Services
 {
     public class AuthorService : IAuthorService
     {
-        private readonly IAuthorsRepository _authorsRepository;
-
-        private readonly IBookRepository _bookRepository;
-        public AuthorService(IAuthorsRepository authorsRepository, IBookRepository bookRepository)
+        private readonly IUnitOfWork _unitOfWork;
+        public AuthorService(IUnitOfWork unitOfWork)
         {
-            _authorsRepository = authorsRepository;
-            _bookRepository = bookRepository;
+            _unitOfWork = unitOfWork;
         }
         public async Task<Data.Models.Author?> GetAuthorById(int id)
         {
-            return await _authorsRepository.GetByIdAsync(id);
+            return await _unitOfWork.AuthorsRepository.GetByIdAsync(id);
+
         }
     }
 }

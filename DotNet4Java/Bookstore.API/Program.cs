@@ -121,6 +121,7 @@ builder.Services.AddTransient<IBookRepository, BookRepository>();
 builder.Services.AddTransient<IAuthorsRepository, AuthorsRepository>();
 builder.Services.AddTransient<IBookService, BookService>();
 builder.Services.AddTransient<IAuthorService, AuthorService>();
+builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<ISerialNumber, SimpleSerialNumber>();
 builder.Services.AddScoped<ISerialNumber, SerialNumber>();

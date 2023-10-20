@@ -4,7 +4,7 @@ using Bookstore.Repository.Base;
 
 namespace Bookstore.Repository
 {
-    public class BookRepository : BaseRepository<Book>, IBookRepository
+    public class BookRepository : BaseRepository<Book, BookstoreContext>, IBookRepository
     {
         private readonly BookstoreContext _context; 
         public BookRepository(BookstoreContext context) : base(context) 
