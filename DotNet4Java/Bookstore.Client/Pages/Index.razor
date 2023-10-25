@@ -1,9 +1,17 @@
 ﻿@page "/"
 
-<PageTitle>Index</PageTitle>
+<PageTitle>@IndexName</PageTitle>
 
-<h1>Hello, world!</h1>
+<TestComponent TItem="int" Items="example1" ClickCallback="OnClickCallback" />
 
-Welcome to your new app.
+@*<TestComponent TItem="string" Items="@(new List<string>(){"1", "2"})" />*@
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    private string? IndexName = "index";
+    private List<int> example1 = new List<int>() { 1, 2, 3, 4 };
+
+    private void OnClickCallback(int value)
+    {
+        IndexName = "index 2";
+    }
+}
