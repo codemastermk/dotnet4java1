@@ -1,0 +1,10 @@
+﻿@page "/webapi"
+
+<ul>
+    @foreach(var author in Authors)
+    {
+        <li>@author.Name</li>
+    }
+</ul>
+
+<button @onclick="Alert">Alert</button>

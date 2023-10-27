@@ -1,17 +1,24 @@
+using Bookstore.Client.Data;
 using Bookstore.Client.Hubs;
+using Bookstore.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
+builder.Services.AddHttpClient();
+builder.Services.AddDbContextFactory<BookstoreContext>(options => options.UseSqlServer("Server=DESKTOP-RQ4JEVV;Database=Bookstore;Integrated Security=true; TrustServerCertificate=true;"));
 builder.Services.AddResponseCompression( o =>
 {
     o.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(new[] { "application/octet-stream" });
 });
+builder.Services.AddScoped<StateContainer>();
+
 
 var app = builder.Build();
 

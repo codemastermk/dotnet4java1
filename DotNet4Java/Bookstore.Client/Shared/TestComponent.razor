@@ -2,12 +2,18 @@
 
 <p>@testParagraph</p>
 
+<p>Property Value: @_stateContainer.Property</p>
+
 <p>
     <input type="number" @bind="testNumber"/>
 </p>
 
 <button @onclick="@(() => UpdateHandlerAsync("second"))">
     Update
+</button>
+
+<button @onclick="@(() => UpdatePropertyValueAsync())">
+    Change Value
 </button>
 
 <ul>
