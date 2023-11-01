@@ -61,10 +61,5 @@ namespace Bookstore.Client.Pages
             //await jSRuntime.InvokeVoidAsync("displayTickerAlert1");
             var result = await jSRuntime.InvokeAsync<string>("displayTickerAlert1");
         }
-
-        public class GitHubBranch
-        {
-            public string? Name { get; set; }
-        }
     }
 }
