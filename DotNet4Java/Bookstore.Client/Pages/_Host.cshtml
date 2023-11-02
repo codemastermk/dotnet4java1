@@ -35,5 +35,12 @@
             return "return from js";
         };
     </script>
+    <script>
+        window.returnArrayAsync = () =>{
+            DotNet.invokeMethodAsync('Bookstore.Client', 'ReturnArrayAsync').then(data => {
+                console.log(data);
+            })
+        }
+    </script>
 </body>
 </html>

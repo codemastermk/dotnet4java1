@@ -61,5 +61,11 @@ namespace Bookstore.Client.Pages
             //await jSRuntime.InvokeVoidAsync("displayTickerAlert1");
             var result = await jSRuntime.InvokeAsync<string>("displayTickerAlert1");
         }
+
+        [JSInvokable]
+        public static Task<int[]> ReturnArrayAsync()
+        {
+            return Task.FromResult(new int[] {1, 2, 3});
+        }
     }
 }
