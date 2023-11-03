@@ -1,18 +1,78 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject ISnackbar Snackbar
+@inject ProtectedLocalStorage _protectedLocalStorage
 
 <PageTitle>Bookstore.Client</PageTitle>
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+<AuthorizeView>
+    <Authorized>
+        <div class="page">
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+
+            <main>
+                <div class="top-row px-4">
+                    <MudButton Variant="Variant.Text" OnClick="Logout">Logout</MudButton>
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                </div>
+                <article class="content px-4">
+                    @Body
+                </article>
+            </main>
         </div>
-        <article class="content px-4">
-            @Body
-        </article>
-    </main>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <MudPaper Class="pa-16 ma-2" Square="true" Style="max-width: 30vw;">
+            <MudText Typo="Typo.h4">Please Sign In</MudText>
+            <MudTextField @bind-Value="UserName" Label="Standard" Variant="Variant.Text"></MudTextField>
+            <MudTextField @bind-Value="Password" Label="Standard" Variant="Variant.Text" InputType="InputType.Password"></MudTextField>
+            
+            <MudButton Variant="Variant.Outlined" OnClick="Login">Login</MudButton>
+        </MudPaper>
+        
+    </NotAuthorized>
+    <Authorizing>
+        <p>authoirization in progress</p>
+    </Authorizing>
+</AuthorizeView>
+
+@code{
+    private string UserName { get; set; }
+
+    private string Password { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userData = await _protectedLocalStorage.GetAsync<string>("user");
+        if (!string.IsNullOrEmpty(userData.Value))
+        {
+            var result = $"{userData.Value}";
+            var user = result.Split(",");
+            await ((CustomAuthStateProvider)AuthenticationStateProvider).AuthenticateUserAsync(user[0].Trim(), user[1].Trim());
+        }
+    }
+
+
+    private async Task Login()
+    {
+        if(UserName.Length < 5)
+        {
+            Snackbar.Add("Invalid Username", Severity.Error);
+        }
+        await ((CustomAuthStateProvider)AuthenticationStateProvider).AuthenticateUserAsync(UserName, Password);
+        Snackbar.Add("Welcome", Severity.Success);
+    }
+
+    private async Task Logout()
+    {
+        await ((CustomAuthStateProvider)AuthenticationStateProvider).Logout();
+    }
+}
+
+

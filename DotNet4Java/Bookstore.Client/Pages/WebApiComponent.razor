@@ -1,5 +1,5 @@
 ﻿@page "/webapi"
-
+@attribute [Authorize(Roles = "Admin")]
 <ul>
     @foreach(var author in Authors)
     {
@@ -7,8 +7,7 @@
     }
 </ul>
 
-<button @onclick="Alert">Alert</button>
-
+<MudButton EndIcon="@Icons.Material.Filled.Send" Variant="Variant.Outlined" Color="Color.Success" OnClick="Alert">Alert</MudButton>
 
 <button onclick="returnArrayAsync()">
     trigger .net from js
